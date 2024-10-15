@@ -9,7 +9,7 @@ from textnode import (
     text_type_image,
     text_type_link
 )
-from markdown_helpers import (
+from inline_markdown import (
     split_nodes_delimiter,
     extract_markdown_images,
     extract_markdown_links,
