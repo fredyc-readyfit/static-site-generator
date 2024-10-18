@@ -4,7 +4,8 @@ from blocks_markdown import (
     BlockType,
     markdown_to_blocks,
     block_to_block_type,
-    markdown_to_html_node
+    markdown_to_html_node,
+    extract_title
 )
 from leafnode import LeafNode
 
@@ -287,6 +288,42 @@ This is another paragraph with *italic* text and `code` here
             html,
             "<div><ul><li>This is a list</li><li>with items</li><li>and <i>more</i> items</li></ul><ol><li>This is an <code>ordered</code> list</li><li>with items</li><li>and more items</li></ol></div>",
         )
+    
+    def test_extract_title(self):
+        markdown = """# This is a heading     
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item
+"""
+        title = extract_title(markdown)
+        self.assertEqual(title, "This is a heading")
+
+    def test_extract_title_end(self):
+        markdown = """
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item
+
+# This is a heading     
+"""
+        title = extract_title(markdown)
+        self.assertEqual(title, "This is a heading")
+
+    def test_extract_title_exception(self):
+        markdown = """
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item
+"""
+        self.assertRaises(ValueError, extract_title, markdown)
 
 if __name__ == "__main__":
     unittest.main()

@@ -144,9 +144,18 @@ def markdown_ordered_list_to_html_node(ordered_list):
 def markdown_paragraph_to_html_node(paragraph):
     text_nodes = text_to_textnodes(" ".join(paragraph.split('\n')))
     if len(text_nodes) == 1:
-        return LeafNode('p', paragraph)
+        return text_node_to_html_node(text_nodes[0])
     elif len(text_nodes) > 1:
         html_nodes = []
         for tn in text_nodes:
             html_nodes.append(text_node_to_html_node(tn))
         return ParentNode('p', html_nodes)
+
+def extract_title(markdown):
+    lines = markdown.split('\n')
+    for line in lines:
+        line = line.strip()
+        if line.startswith("# "):
+            return line.replace("#", "").strip()
+    
+    raise ValueError("Wrong makdown format (no title)")
