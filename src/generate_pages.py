@@ -4,7 +4,7 @@ from blocks_markdown import (
     extract_title
 )
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, 'r') as file:
@@ -16,21 +16,22 @@ def generate_page(from_path, template_path, dest_path):
     html_node = markdown_to_html_node(markdown)
     title = extract_title(markdown)
     html = template.replace("{{ Title }}", title).replace("{{ Content }}", html_node.to_html())
+    html = html.replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
 
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
 
     with open(dest_path, 'w') as file:
         file.write(html)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     content_dir_list = os.listdir(dir_path_content)
     for file in content_dir_list:
         if os.path.isfile(os.path.join(dir_path_content, file)):
             from_path = os.path.join(dir_path_content, file)
             dest_path = os.path.join(dest_dir_path, file.replace('md', 'html'))
-            generate_page(from_path, template_path, dest_path)
+            generate_page(from_path, template_path, dest_path, basepath)
 
         else:
             subdir_path_content = os.path.join(dir_path_content, file)
             dest_subdir_path = os.path.join(dest_dir_path, file)
-            generate_pages_recursive(subdir_path_content, template_path, dest_subdir_path)
+            generate_pages_recursive(subdir_path_content, template_path, dest_subdir_path, basepath)

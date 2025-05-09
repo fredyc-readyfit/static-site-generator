@@ -2,7 +2,7 @@ import shutil
 import os
 
 origin_dir = 'static'
-destination_dir = 'public'
+destination_dir = 'docs'
 
 def recursive_copy(paths = []):
     if len(paths) == 0:
